@@ -1,0 +1,7 @@
+{
+    "editor.defaultFormatter": null,
+    "eslint.codeActionsOnSave.rules": null,
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+}
