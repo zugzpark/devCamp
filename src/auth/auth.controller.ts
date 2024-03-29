@@ -13,12 +13,16 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
+import { UserService } from '../module/user/user.service';
 import { LoginReqDto, CreateUserDto, SignupResDto } from './dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   /**
    * 로그인
@@ -34,13 +38,20 @@ export class AuthController {
   @Post('login')
   async login(@Req() req: Request, @Body() loginReqDto: LoginReqDto) {
     console.log(`로그인`, loginReqDto);
-   
-      const reqInfo = {
-        ip: req.ip,
-        endpoint: `${req.method} ${req.originalUrl}`,
-        ua: req.headers['user-agent'] || '',
-      };
- 
+
+    const reqInfo = {
+      ip: req.ip,
+      endpoint: `${req.method} ${req.originalUrl}`,
+      ua: req.headers['user-agent'] || '',
+    };
+    console.log(reqInfo)
+
+    
+    // return this.authService.login(
+    //   loginReqDto.email,
+    //   loginReqDto.password,
+    //   reqInfo,
+    // );
   }
 
   /**
@@ -54,8 +65,14 @@ export class AuthController {
   @HttpCode(201)
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto): Promise<SignupResDto> {
-    
-    
-    return;
+    console.log(`회원가입`);
+    console.log(createUserDto);
+    const user = await this.userService.createUser(createUserDto);
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+    };
   }
 }
